@@ -824,17 +824,23 @@ static struct opp_tbl_info opp_tbls[] = {
 #define PLL_DIV1_1209_FREQ		(1209000) //for 1.2G & 600MHz
 #define PLL_DIV1_1001_FREQ		(1001000) //for 1G - low
 #define PLL_DIV1_1000_FREQ		(1000000) //for 1G - low
+
+#define PLL_DIV1_FREQ			(1001000)	/* KHz */
 #define PLL_DIV2_FREQ			(520000)	/* KHz */
+#define PLL_DIV4_FREQ			(260000)  /* KHz */
+#define PLL_DIV8_FREQ			(130000)  /* KHz */
 
 #define DDS_DIV1_1807_FREQ		(0x00116000)	/* 1807MHz */
 #define DDS_DIV1_1508_FREQ		(0x000E8000)	/* 1508MHz */
 #define DDS_DIV1_1495_FREQ		(0x000E6000)	/* 1495MHz */
 #define DDS_DIV1_1209_FREQ		(0x000BA000)	/* 1209MHz */
 #define DDS_DIV1_1001_FREQ		(0x0009A000)	/* 1001MHz */
+#define DDS_DIV1_1000_FREQ		(0x00099D8A)	/* 1000MHz */
+
 #define DDS_DIV1_FREQ			(0x0009A000)	/* 1001MHz */
 #define DDS_DIV2_FREQ			(0x010A0000)	/* 520MHz  */
-
-#define DDS_DIV1_1000_FREQ		(0x00099D8A)	/* 1000MHz */
+#define DDS_DIV4_FREQ			(0x020A0000)	/* 260MHz  */
+#define DDS_DIV8_FREQ			(0x030A0000)	/* 130MHz  */
 
 /* for turbo mode */
 #define TURBO_MODE_BOUNDARY_CPU_NUM	2
@@ -1058,14 +1064,23 @@ static unsigned int _cpu_freq_calc(unsigned int con1, unsigned int ckdiv1)
 	FUNC_ENTER(FUNC_LV_HELP);
 
 	con1 &= _BITMASK_(26 : 0);
-	if (con1 >= DDS_DIV2_FREQ) {
-		freq = DDS_DIV2_FREQ;
-		freq = PLL_DIV2_FREQ + (((con1 - freq) / 0x2000) * PLL_FREQ_STEP / 2);
-	} else if (con1 >= DDS_DIV1_FREQ) {
-		freq = DDS_DIV1_FREQ;
-		freq = PLL_DIV1_1001_FREQ + (((con1 - freq) / 0x2000) * PLL_FREQ_STEP);
-	} else
-		BUG();
+
+    if (con1 >= DDS_DIV8_FREQ) {
+        freq = DDS_DIV8_FREQ;
+        freq = PLL_DIV8_FREQ + (((con1 - freq) / 0x2000) * PLL_FREQ_STEP / 8);
+    } else if (con1 >= DDS_DIV4_FREQ) {
+        freq = DDS_DIV4_FREQ;
+        freq = PLL_DIV4_FREQ + (((con1 - freq) / 0x2000) * PLL_FREQ_STEP / 4);
+    } else if (con1 >= DDS_DIV2_FREQ) {
+        freq = DDS_DIV2_FREQ;
+        freq = PLL_DIV2_FREQ + (((con1 - freq) / 0x2000) * PLL_FREQ_STEP / 2);
+    } else if (con1 >= DDS_DIV1_FREQ) {
+        freq = DDS_DIV1_FREQ;
+        freq = PLL_DIV1_FREQ + (((con1 - freq) / 0x2000) * PLL_FREQ_STEP);
+    } else {
+        cpufreq_err("@%s: Invalid DDS value = 0x%x\n", __func__, con1);
+        BUG();
+    }
 
     switch (ckdiv1) {
         case 9:
@@ -1179,17 +1194,20 @@ static unsigned int _cpu_dds_calc(unsigned int khz) /* XXX: NOT OK FOR 1007.5MHz
 {
 	unsigned int dds;
 	FUNC_ENTER(FUNC_LV_HELP);
-	
-	if (khz >= PLL_DIV1_1001_FREQ)
-		dds = DDS_DIV1_1001_FREQ + ((khz - PLL_DIV1_1001_FREQ) / PLL_FREQ_STEP) * 0x2000;
-	else if (khz >= PLL_DIV2_FREQ)
-		dds = DDS_DIV2_FREQ + ((khz - PLL_DIV2_FREQ) * 2 / PLL_FREQ_STEP) * 0x2000;
-	else
-		BUG();
-		
+
+  if (khz >= PLL_DIV1_FREQ)
+      dds = DDS_DIV1_FREQ + ((khz - PLL_DIV1_FREQ) / PLL_FREQ_STEP) * 0x2000;
+  else if (khz >= PLL_DIV2_FREQ)
+      dds = DDS_DIV2_FREQ + ((khz - PLL_DIV2_FREQ) * 2 / PLL_FREQ_STEP) * 0x2000;
+  else if (khz >= PLL_DIV4_FREQ)
+      dds = DDS_DIV4_FREQ + ((khz - PLL_DIV4_FREQ) * 4 / PLL_FREQ_STEP) * 0x2000;
+  else if (khz >= PLL_DIV8_FREQ)
+      dds = DDS_DIV8_FREQ + ((khz - PLL_DIV8_FREQ) * 8 / PLL_FREQ_STEP) * 0x2000;
+  else
+      BUG();
 
 	FUNC_EXIT(FUNC_LV_HELP);
-	
+
 	return dds;
 }
 
