@@ -140,9 +140,10 @@ extern unsigned int mt_get_cpu_freq(void);
 #define CPU_DVFS_FREQ6   (754000) /* KHz */ //1.508/2
 #define CPU_DVFS_FREQ7   (604500) /* KHz */ //1.209/2
 #define CPU_DVFS_FREQ8   (552500) /* KHz */ //1.105/2
-#define CPU_DVFS_FREQ9   (520000) /* KHz */
+#define CPU_DVFS_FREQ9   (442000) /* KHz */
+#define CPU_DVFS_FREQ10  (221000) /* KHz */
 
-#define CPUFREQ_LAST_FREQ_LEVEL    (CPU_DVFS_FREQ9)
+#define CPUFREQ_LAST_FREQ_LEVEL    (CPU_DVFS_FREQ10)
 
 /*
  * LOG and Test
@@ -791,6 +792,7 @@ static struct mt_cpu_freq_info opp_tbl_e1_0[] = {
 	OP(CPU_DVFS_FREQ7, 115000),
 	OP(CPU_DVFS_FREQ8, 115000),
 	OP(CPU_DVFS_FREQ9, 115000),
+	OP(CPU_DVFS_FREQ10, 115000),
 };
 
 /* CPU LEVEL 1, 1.5GHz segment */
@@ -801,6 +803,7 @@ static struct mt_cpu_freq_info opp_tbl_e1_1[] = {
 	OP(CPU_DVFS_FREQ7,  105000),
 	OP(CPU_DVFS_FREQ8,  105000),
 	OP(CPU_DVFS_FREQ9,  105000),
+	OP(CPU_DVFS_FREQ10,  105000),
 };
 
 struct opp_tbl_info {
@@ -1315,36 +1318,24 @@ static void set_cur_freq(struct mt_cpu_dvfs *p, unsigned int cur_khz, unsigned i
 	if (!is_fhctl_used) {
 		/* set ca7_clkdiv1_sel */
 		switch (target_khz) {
-			case CPU_DVFS_FREQ4:
-				dds = _cpu_dds_calc(CPU_DVFS_FREQ4);  // 1001
+			case CPU_DVFS_FREQ4:								// 1001
+			case CPU_DVFS_FREQ5:								// 903.4
+			case CPU_DVFS_FREQ6:								// 754
+				dds = _cpu_dds_calc(target_khz);
 				sel = 8;    // 4/4
 				break;
 
-			case CPU_DVFS_FREQ5:
-				dds = _cpu_dds_calc(CPU_DVFS_FREQ5);  // 903= 1807 / 2
-				sel = 8;    // 4/4
-				break;
-				
-			case CPU_DVFS_FREQ6:
-				dds = _cpu_dds_calc(CPU_DVFS_FREQ6);   // 754= 1508 / 2
-				sel = 8;    // 4/4
-				break;
-			
-			case CPU_DVFS_FREQ7:
-				dds = _cpu_dds_calc(1209000);   // 604 = 1209 / 2
-				sel = 10;    // 2/4
-				break;
-			
+			case CPU_DVFS_FREQ7:								// 604.5
+			case CPU_DVFS_FREQ8:								// 552.5
+    	case CPU_DVFS_FREQ9:								// 442
+        dds = _cpu_dds_calc(target_khz * 2);
+        sel = 10;    // 2/4
+        break;
 
-			case CPU_DVFS_FREQ8:
-				dds = _cpu_dds_calc(1105000);   // 552.5 = 1105 / 2
-				sel = 10;    // 2/4
-				break;
-
-			case CPU_DVFS_FREQ9:
-				dds = _cpu_dds_calc(CPU_DVFS_FREQ9);   // 520
-				sel = 8;    // 4/4
-				break;
+			case CPU_DVFS_FREQ10:								// 221
+        dds = _cpu_dds_calc(target_khz * 4);
+        sel = 11;    // 1/4
+        break;
 
 			default:
 				BUG();
