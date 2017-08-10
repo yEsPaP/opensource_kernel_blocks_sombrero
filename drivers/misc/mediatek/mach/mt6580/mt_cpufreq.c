@@ -139,8 +139,10 @@ extern unsigned int mt_get_cpu_freq(void);
 #define CPU_DVFS_FREQ5   (903500) /* KHz */ //1.807/2
 #define CPU_DVFS_FREQ6   (754000) /* KHz */ //1.508/2
 #define CPU_DVFS_FREQ7   (604500) /* KHz */ //1.209/2
+#define CPU_DVFS_FREQ8   (552500) /* KHz */ //1.105/2
+#define CPU_DVFS_FREQ9   (520000) /* KHz */
 
-#define CPUFREQ_LAST_FREQ_LEVEL    (CPU_DVFS_FREQ7)
+#define CPUFREQ_LAST_FREQ_LEVEL    (CPU_DVFS_FREQ9)
 
 /*
  * LOG and Test
@@ -787,7 +789,8 @@ static struct mt_cpu_freq_info opp_tbl_e1_0[] = {
 	OP(CPU_DVFS_FREQ5, 115000),
 	OP(CPU_DVFS_FREQ6, 115000),
 	OP(CPU_DVFS_FREQ7, 115000),
-	OP(CPU_DVFS_FREQ7, 115000),
+	OP(CPU_DVFS_FREQ8, 115000),
+	OP(CPU_DVFS_FREQ9, 115000),
 };
 
 /* CPU LEVEL 1, 1.5GHz segment */
@@ -796,7 +799,8 @@ static struct mt_cpu_freq_info opp_tbl_e1_1[] = {
 	OP(CPU_DVFS_FREQ5,   105000),
 	OP(CPU_DVFS_FREQ6,  105000),
 	OP(CPU_DVFS_FREQ7,  105000),
-	OP(CPU_DVFS_FREQ7,  105000),
+	OP(CPU_DVFS_FREQ8,  105000),
+	OP(CPU_DVFS_FREQ9,  105000),
 };
 
 struct opp_tbl_info {
@@ -1313,6 +1317,17 @@ static void set_cur_freq(struct mt_cpu_dvfs *p, unsigned int cur_khz, unsigned i
 				sel = 10;    // 2/4
 				break;
 			
+
+			case CPU_DVFS_FREQ8:
+				dds = _cpu_dds_calc(1105000);   // 552.5 = 1105 / 2
+				sel = 10;    // 2/4
+				break;
+
+			case CPU_DVFS_FREQ9:
+				dds = _cpu_dds_calc(CPU_DVFS_FREQ9);   // 520
+				sel = 8;    // 4/4
+				break;
+
 			default:
 				BUG();
 		}
