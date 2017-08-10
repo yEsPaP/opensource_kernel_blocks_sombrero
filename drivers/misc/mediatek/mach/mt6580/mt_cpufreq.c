@@ -270,7 +270,6 @@ static unsigned int _mt_cpufreq_get_cpu_level(void)
 
     /* get CPU clock-frequency from DT */
 #ifdef CONFIG_OF
-#if 0
     {
         struct device_node *node = of_find_node_by_type(NULL, "cpu");
         unsigned int cpu_speed = 0;
@@ -284,20 +283,15 @@ static unsigned int _mt_cpufreq_get_cpu_level(void)
 
         cpufreq_info("CPU clock-frequency from DT = %d MHz\n", cpu_speed);
 
-        if (cpu_speed >= 1700)
-            lv = CPU_LEVEL_1;   // 1.7G
-        else if (cpu_speed >= 1500)
-            lv = CPU_LEVEL_2;   // 1.5G
-        else if (cpu_speed >= 1300)
-            lv = CPU_LEVEL_3;   // 1.3G
+        if (cpu_speed >= 900)
+            lv = CPU_LEVEL_0;   // 900Mhz
+        else if (cpu_speed >= 600)
+            lv = CPU_LEVEL_1;   // 600Mhz
         else {
             cpufreq_err("No suitable DVFS table, set to default CPU level! clock-frequency=%d\n", cpu_speed);
             lv = CPU_LEVEL_1;
         }
     }
-#else
-	lv = CPU_LEVEL_0;
-#endif
 #else   /* CONFIG_OF */
     /* no DT, we should check efuse for CPU speed HW bounding */
     {
@@ -787,23 +781,23 @@ static struct mt_cpu_dvfs *id_to_cpu_dvfs(enum mt_cpu_dvfs_id id)
 /* CPU LEVEL 0, 1.3GHz segment */
 static struct mt_cpu_freq_info opp_tbl_e1_0[] = {
 	OP(CPU_DVFS_FREQ4,  115000),
-	OP(CPU_DVFS_FREQ5, 115000),
-	OP(CPU_DVFS_FREQ6, 115000),
-	OP(CPU_DVFS_FREQ7, 115000),
-	OP(CPU_DVFS_FREQ8, 115000),
-	OP(CPU_DVFS_FREQ9, 115000),
-	OP(CPU_DVFS_FREQ10, 115000),
+	OP(CPU_DVFS_FREQ5,  115000),
+	OP(CPU_DVFS_FREQ6,  110000),
+	OP(CPU_DVFS_FREQ7,  110000),
+	OP(CPU_DVFS_FREQ8,  105000),
+	OP(CPU_DVFS_FREQ9,  100000),
+	OP(CPU_DVFS_FREQ10, 95000),
 };
 
 /* CPU LEVEL 1, 1.5GHz segment */
 static struct mt_cpu_freq_info opp_tbl_e1_1[] = {
-	OP(CPU_DVFS_FREQ4,   112000),
-	OP(CPU_DVFS_FREQ5,   105000),
+	OP(CPU_DVFS_FREQ4,  110000),
+	OP(CPU_DVFS_FREQ5,  110000),
 	OP(CPU_DVFS_FREQ6,  105000),
 	OP(CPU_DVFS_FREQ7,  105000),
-	OP(CPU_DVFS_FREQ8,  105000),
-	OP(CPU_DVFS_FREQ9,  105000),
-	OP(CPU_DVFS_FREQ10,  105000),
+	OP(CPU_DVFS_FREQ8,  100000),
+	OP(CPU_DVFS_FREQ9,  100000),
+	OP(CPU_DVFS_FREQ10, 95000),
 };
 
 struct opp_tbl_info {
