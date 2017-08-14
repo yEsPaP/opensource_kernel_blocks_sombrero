@@ -92,7 +92,7 @@ typedef struct
 
   #define RG_FQMTR_WINDOW_MASK		0xFFF
   #define RG_FQMTR_WINDOW_BIT			0
-  
+
 #define RG_FQMTR_DATA_MASK			0xFFFF
 #define RG_FQMTR_DATA_BIT			0
 
@@ -101,7 +101,7 @@ typedef struct
 #define RG_FQMTR_RST_BIT			14
 
   #define RG_FQMTR_EN_BIT				15
-  
+
 //- ref_clk_sel
 #define  RG_FQMTR_CKDIV_D1				0x00
 #define  RG_FQMTR_CKDIV_D2				0x01
