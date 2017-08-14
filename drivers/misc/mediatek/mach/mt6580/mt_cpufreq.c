@@ -51,6 +51,7 @@
 // TODO: disable to avoid build error
 //#include "mach/mt_static_power.h"
 #include "mach/upmu_sw.h"
+#include "mach/upmu_hw.h"
 #include "mach/mtk_rtc_hal.h"
 #include "mach/mt_rtc_hw.h"
 #include "mach/mt_hotplug_strategy.h"
@@ -394,20 +395,8 @@ struct pmic_wrap_setting {
 
 static struct pmic_wrap_setting pw = {
     .phase = NR_PMIC_WRAP_PHASE, /* invalid setting for init */
-#if 0
-    .addr = {
-        { PMIC_WRAP_DVFS_ADR0, PMIC_WRAP_DVFS_WDATA0, },
-        { PMIC_WRAP_DVFS_ADR1, PMIC_WRAP_DVFS_WDATA1, },
-        { PMIC_WRAP_DVFS_ADR2, PMIC_WRAP_DVFS_WDATA2, },
-        { PMIC_WRAP_DVFS_ADR3, PMIC_WRAP_DVFS_WDATA3, },
-        { PMIC_WRAP_DVFS_ADR4, PMIC_WRAP_DVFS_WDATA4, },
-        { PMIC_WRAP_DVFS_ADR5, PMIC_WRAP_DVFS_WDATA5, },
-        { PMIC_WRAP_DVFS_ADR6, PMIC_WRAP_DVFS_WDATA6, },
-        { PMIC_WRAP_DVFS_ADR7, PMIC_WRAP_DVFS_WDATA7, },
-    },
-#else
     .addr = { {0, 0} },
-#endif
+		/*
     .set[PMIC_WRAP_PHASE_NORMAL] = {
         ._[IDX_NM_VCORE]          = { PMIC_ADDR_VCORE_VOSEL_ON, VOLT_TO_PMIC_VAL(DEFAULT_VOLT_VCORE), },
         .nr_idx = NR_IDX_NM,
@@ -415,6 +404,29 @@ static struct pmic_wrap_setting pw = {
     .set[PMIC_WRAP_PHASE_DEEPIDLE] = {
 		._[IDX_DI_VCORE_NORMAL]        = { PMIC_VCORE_VOSEL_CTRL_ADDR,   _BITS_(1  : 1,  1),	   },
 		._[IDX_DI_VCORE_SLEEP]	       = { PMIC_VCORE_VOSEL_CTRL_ADDR,   _BITS_(1  : 1,  0),	   },
+        .nr_idx = NR_IDX_DI,
+    },
+		*/
+    .set[PMIC_WRAP_PHASE_NORMAL] = {
+        ._[IDX_NM_NOT_USED1]        = { 0, 0, },
+        ._[IDX_NM_NOT_USED2]        = { 0, 0, },
+        ._[IDX_NM_VCORE_HPM]        = { MT6350_PMIC_VPROC_VOSEL_ON_ADDR, VOLT_TO_PMIC_VAL(115000),  },
+        ._[IDX_NM_VCORE_TRANS2]     = { MT6350_PMIC_VPROC_VOSEL_ON_ADDR, VOLT_TO_PMIC_VAL(111250),  },
+        ._[IDX_NM_VCORE_TRANS1]     = { MT6350_PMIC_VPROC_VOSEL_ON_ADDR, VOLT_TO_PMIC_VAL(108125),  },
+        ._[IDX_NM_VCORE_LPM]        = { MT6350_PMIC_VPROC_VOSEL_ON_ADDR, VOLT_TO_PMIC_VAL(105000),  },
+        ._[IDX_NM_VRF18_0_PWR_ON]   = { MT6350_PMIC_RG_VRF18_EN_ADDR,   _BITS_(1 : 1,  1), },
+        ._[IDX_NM_VRF18_0_SHUTDOWN] = { MT6350_PMIC_RG_VRF18_EN_ADDR,   _BITS_(1 : 1,  0), },
+        .nr_idx = NR_IDX_NM,
+    },
+    .set[PMIC_WRAP_PHASE_DEEPIDLE] = {
+        ._[IDX_DI_VPROC_NORMAL]     = { MT6350_PMIC_VPROC_VOSEL_CTRL_ADDR, _BITS_(1 : 1,  1), },
+        ._[IDX_DI_VPROC_SLEEP]      = { MT6350_PMIC_VPROC_VOSEL_CTRL_ADDR, _BITS_(1 : 1,  0), },
+        ._[IDX_DI_VCORE_HPM]        = { MT6350_PMIC_VPROC_VOSEL_ON_ADDR,  VOLT_TO_PMIC_VAL(115000), },
+        ._[IDX_DI_VCORE_TRANS2]     = { MT6350_PMIC_VPROC_VOSEL_ON_ADDR,  VOLT_TO_PMIC_VAL(111250), },
+        ._[IDX_DI_VCORE_TRANS1]     = { MT6350_PMIC_VPROC_VOSEL_ON_ADDR,  VOLT_TO_PMIC_VAL(108125), },
+        ._[IDX_DI_VCORE_LPM]        = { MT6350_PMIC_VPROC_VOSEL_ON_ADDR,  VOLT_TO_PMIC_VAL(105000), },
+        ._[IDX_DI_VRF18_0_SHUTDOWN] = { MT6350_PMIC_RG_VRF18_EN_ADDR,    _BITS_(1 : 1,  0), },
+        ._[IDX_DI_VRF18_0_PWR_ON]   = { MT6350_PMIC_RG_VRF18_EN_ADDR,    _BITS_(1 : 1,  1), },
         .nr_idx = NR_IDX_DI,
     },
 };
@@ -1498,8 +1510,8 @@ static int set_cur_volt_pmic_wrap(struct mt_cpu_dvfs *p, unsigned int volt) /* v
 
 	FUNC_ENTER(FUNC_LV_LOCAL);
 
-	mt_cpufreq_set_pmic_cmd(PMIC_WRAP_PHASE_NORMAL, IDX_NM_VCORE, VOLT_TO_PMIC_VAL(volt));
-	mt_cpufreq_apply_pmic_cmd(IDX_NM_VCORE);
+	mt_cpufreq_set_pmic_cmd(PMIC_WRAP_PHASE_NORMAL, IDX_NM_VCORE_HPM, VOLT_TO_PMIC_VAL(volt));
+	mt_cpufreq_apply_pmic_cmd(IDX_NM_VCORE_HPM);
 	if (volt > cur_volt)
 		udelay(PMIC_VOLT_UP_SETTLE_TIME(cur_volt, volt));
     if (NULL != g_pCpuVoltSampler)
@@ -3090,8 +3102,8 @@ void dvfs_set_cpu_volt(enum mt_cpu_dvfs_id id, int volt)  // volt: mv * 100
 void dvfs_set_vcore_ao_volt(int pmic_val)
 {
     cpufreq_dbg("%s(%d)\n", __func__, pmic_val);
-    mt_cpufreq_set_pmic_cmd(PMIC_WRAP_PHASE_NORMAL, IDX_NM_VCORE, pmic_val);
-    mt_cpufreq_apply_pmic_cmd(IDX_NM_VCORE);
+    mt_cpufreq_set_pmic_cmd(PMIC_WRAP_PHASE_NORMAL, IDX_NM_VCORE_HPM, pmic_val);
+    mt_cpufreq_apply_pmic_cmd(IDX_NM_VCORE_HPM);
 }
 
 
