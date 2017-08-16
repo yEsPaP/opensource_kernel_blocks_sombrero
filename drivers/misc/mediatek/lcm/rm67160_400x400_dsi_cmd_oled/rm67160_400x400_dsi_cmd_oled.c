@@ -89,26 +89,53 @@ static struct LCM_setting_table {
     unsigned char para_list[64];
 };
 
-
-
-static struct LCM_setting_table lcm_initialization_setting[] = 
+/*
+static struct LCM_setting_table lcm_initialization_setting[] =
 {
 {0xFE,1,{0x07}},
 {0x07,1,{0x4F}},
 {0xFE,1,{0x0A}},
 {0x1C,1,{0x1B }}, //cmd :0x10
-{0xFE,1,{0x00}},  
-{0x35,1,{0x00}}, 
+{0xFE,1,{0x00}},
+{0x35,1,{0x00}},
 
 {0x51, 1, {0x00}},      //switch off backlight untill system's setting
-             
+
 
 	{0x11,1,{0x00}},// Sleep-Out
 	{REGFLAG_DELAY, 120, {}},
-	{0x29,1,{0x00}},// Display On                                                                                 
+	{0x29,1,{0x00}},// Display On
   	{REGFLAG_DELAY, 50, {}},
 
-	{REGFLAG_END_OF_TABLE, 0x00, {}}	
+	{REGFLAG_END_OF_TABLE, 0x00, {}}
+
+};
+*/
+
+//
+// References: https://android.googlesource.com/kernel/msm/+/9f98b442a433678cf7d8ad9e4a775c1ce20798c6/arch/arm/boot/dts/apq8026-sturgeon/dsi-panel-edo-rm67160-hvga-video.dtsi
+//
+
+static struct LCM_setting_table lcm_initialization_setting[] =
+{
+{0xFE,1,{0x07}},
+{0x07,1,{0x4F}},
+{0xFE,1,{0x0A}},
+{0x1C,1,{0x1B }}, //cmd :0x10
+{0xFE,1,{0x05}},
+{0x05,1,{0x13}},
+{0xFE,1,{0x01}},
+{0x30,1,{0x45}},
+{0xFE,1,{0x00}},
+{0x35,1,{0x00}},
+{0x51, 1, {0x00}},      //switch off backlight untill system's setting
+{0x11,1,{0x00}},// Sleep-Out
+{REGFLAG_DELAY, 120, {}},
+{0x36,1,{0x40}},
+{0x29,1,{0x00}},// Display On
+{REGFLAG_DELAY, 50, {}},
+
+{REGFLAG_END_OF_TABLE, 0x00, {}}
 
 };
 
