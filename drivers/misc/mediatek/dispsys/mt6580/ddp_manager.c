@@ -207,7 +207,7 @@ static int module_power_off(DISP_MODULE_ENUM module)
 static int module_power_on(DISP_MODULE_ENUM module)
 {
     if(module_is_dsi(module))
-    {   
+    {
         /*bypass dsi*/
         return 0;
     }
@@ -250,7 +250,7 @@ static int assign_default_irqs_table(DDP_SCENARIO_ENUM scenario,DDP_IRQ_EVENT_MA
         case DDP_SCENARIO_PRIMARY_OVL_MEMOUT:
         case DDP_SCENARIO_PRIMARY_DITHER_MEMOUT:
         case DDP_SCENARIO_PRIMARY_UFOE_MEMOUT:
-        case DDP_SCENARIO_PRIMARY_ALL:     
+        case DDP_SCENARIO_PRIMARY_ALL:
             idx = 0;
             break;
         case DDP_SCENARIO_SUB_RDMA1_DISP:
@@ -381,14 +381,14 @@ int dpmgr_modify_path_power_on_new_modules(disp_path_handle dp_handle, DDP_SCENA
         {
             content->module_usage_table[module_name]++;
             DISP_LOG_D("add module %s\n", ddp_get_module_name(module_name));
-            
+
             content->module_path_table[module_name] = handle;
 			if(!sw_only)
 	            module_power_on(module_name);
         }
     }
 	return 0;
-	
+
 }
 /* NOTES: modify path should call API like this :
 	old_scenario = dpmgr_get_scenario(handle);
@@ -403,7 +403,7 @@ int dpmgr_modify_path(disp_path_handle dp_handle, DDP_SCENARIO_ENUM new_scenario
     ASSERT(dp_handle != NULL);
     ddp_path_handle handle = (ddp_path_handle)dp_handle;
 	DDP_SCENARIO_ENUM old_scenario = handle->scenario;
-	
+
     handle->cmdqhandle 	= cmdq_handle;
     handle->scenario 	= new_scenario;
     DISP_LOG_I("modify handle %p from %s to %s\n", handle, ddp_get_scenario_name(old_scenario), ddp_get_scenario_name(new_scenario));
@@ -448,7 +448,7 @@ int dpmgr_modify_path_power_off_old_modules(DDP_SCENARIO_ENUM old_scenario, DDP_
 	            module_power_off(module_name);
         }
     }
-	
+
 	return 0;
 }
 
@@ -486,7 +486,7 @@ int dpmgr_destroy_path(disp_path_handle dp_handle, cmdqRecHandle cmdq_handle)
     ddp_path_handle handle = (ddp_path_handle)dp_handle;
 	if(handle)
          ddp_disconnect_path(handle->scenario,cmdq_handle);
-    
+
 	dpmgr_destroy_path_handle(dp_handle);
     return 0;
 }
@@ -532,8 +532,8 @@ int dpmgr_path_add_memout(disp_path_handle dp_handle, ENGINE_DUMP engine,void * 
     ASSERT(handle->scenario ==DDP_SCENARIO_PRIMARY_DISP);
     DISP_MODULE_ENUM wdma = DISP_MODULE_WDMA0;
     if(!ddp_is_scenario_on_primary(handle->scenario))
-        return -1;    
-    
+        return -1;
+
 
     if(ddp_is_module_in_scenario(handle->scenario, wdma)==1)
     {
@@ -574,7 +574,7 @@ int dpmgr_path_remove_memout(disp_path_handle dp_handle, void * cmdq_handle)
     DISP_MODULE_ENUM wdma = DISP_MODULE_WDMA0;
     if(!ddp_is_scenario_on_primary(handle->scenario))
         return -1;
-        
+
     if(ddp_is_module_in_scenario(handle->scenario, wdma)==0)
     {
         DDPERR("dpmgr_path_remove_memout error, wdma is not in scenario=%s \n", ddp_get_scenario_name(handle->scenario));
@@ -842,7 +842,7 @@ int dpmgr_path_enable_irq(disp_path_handle dp_handle, void * cmdq_handle, DDP_IR
 	{
 		ddp_mutex_Interrupt_enable(handle->hwmutexid, cmdq_handle);
 	}
-	
+
 	for( i=module_num-1; i >= 0  ;i--)
 	{
 	    module_name = modules[i];
@@ -897,7 +897,7 @@ int dpmgr_path_reset(disp_path_handle dp_handle, int encmdq)
 static unsigned int dpmgr_is_PQ(DISP_MODULE_ENUM module)
 {
    unsigned int isPQ = 0;
-   
+
    switch(module)
    {
        case DISP_MODULE_COLOR0:
@@ -912,7 +912,7 @@ static unsigned int dpmgr_is_PQ(DISP_MODULE_ENUM module)
            isPQ = 0;
    }
 
-   return isPQ;    
+   return isPQ;
 }
 
 int dpmgr_path_config(disp_path_handle dp_handle, disp_ddp_path_config * config, void * cmdq_handle)
@@ -1187,7 +1187,7 @@ int dpmgr_path_user_cmd(disp_path_handle dp_handle, int msg, unsigned long arg, 
                     cmdqhandle);
             }
             break;
-            
+
         case DISP_IOCTL_SET_PQPARAM:
         case DISP_IOCTL_GET_PQPARAM:
         case DISP_IOCTL_SET_PQINDEX:
@@ -1402,11 +1402,11 @@ int dpmgr_check_status(disp_path_handle dp_handle)
     for( i=0; i< module_num;i++)
     {
         ddp_dump_reg(modules[i]);
-    }  
+    }
 
-    ddp_dump_reg(DISP_MODULE_CONFIG);    
+    ddp_dump_reg(DISP_MODULE_CONFIG);
     ddp_dump_reg(DISP_MODULE_MUTEX);
-    
+
     return 0;
 }
 
