@@ -284,6 +284,7 @@ static void lcm_get_params(LCM_PARAMS *params)
 
 static void lcm_init(void)
 {
+	printk("RM67160 lcm_init");
     SET_RESET_PIN(1);
     MDELAY(10);
     SET_RESET_PIN(0);
@@ -292,6 +293,7 @@ static void lcm_init(void)
     MDELAY(120);
     push_table(lcm_initialization_setting, sizeof(lcm_initialization_setting) / sizeof(struct LCM_setting_table), 1);
 	lcm_setbacklight(NULL,0);   ///shtudown backlight again
+	LCM_PRINT(" =========== %s, %d \n", "rm67160_400x400 lcm_init", __LINE__);
 }
 
 
@@ -308,17 +310,18 @@ static void lcm_suspend(void)
     	push_table(lcm_deep_sleep_mode_in_setting, sizeof(lcm_deep_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 		MDELAY(20);
 	}
-	LCM_PRINT(" =========== %s, %d \n", "rm67160_480x480 lcm_suspend", __LINE__);
+	LCM_PRINT(" =========== %s, %d \n", "rm67160_400x400 lcm_suspend", __LINE__);
 }
 
 
 static void lcm_resume(void)
 {
+	printk("RM67160 lcm_suspend,idle_clock_mode=%d\n",idle_clock_mode);
 #if 0
 	//MDELAY(500);
 	push_table(lcm_sleep_out_setting, sizeof(lcm_sleep_out_setting) / sizeof(struct LCM_setting_table), 1);
 	lcm_setbacklight(NULL,0);   ///shtudown backlight again
-	LCM_PRINT(" =========== %s, %d \n", "rm67160_480x480 lcm_resume", __LINE__);
+	LCM_PRINT(" =========== %s, %d \n", "rm67160_400x400 lcm_resume", __LINE__);
 #else
 	if(idle_clock_mode == 1)
 	{
@@ -330,6 +333,7 @@ static void lcm_resume(void)
 		lcm_init();
 	}
 #endif
+	LCM_PRINT(" =========== %s, %d \n", "rm67160_400x400 lcm_resume", __LINE__);
 }
 
 
