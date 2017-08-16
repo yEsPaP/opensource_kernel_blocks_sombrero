@@ -52,7 +52,7 @@ extern unsigned int idle_clock_mode;
 #ifndef TRUE
     #define   TRUE     1
 #endif
- 
+
 #ifndef FALSE
     #define   FALSE    0
 #endif
@@ -80,7 +80,7 @@ static void lcm_setbacklight(void* handle,unsigned int level);
 #define wrtie_cmd(cmd)										lcm_util.dsi_write_cmd(cmd)
 #define write_regs(addr, pdata, byte_nums)					lcm_util.dsi_write_regs(addr, pdata, byte_nums)
 #define read_reg(cmd)											lcm_util.dsi_dcs_read_lcm_reg(cmd)
-#define read_reg_V2(cmd,buffer,buffer_size)					lcm_util.dsi_dcs_read_lcm_reg_v2(cmd,buffer,buffer_size)       
+#define read_reg_V2(cmd,buffer,buffer_size)					lcm_util.dsi_dcs_read_lcm_reg_v2(cmd,buffer,buffer_size)
 
 
 static struct LCM_setting_table {
@@ -194,26 +194,26 @@ static void push_table(struct LCM_setting_table *table, unsigned int count, unsi
 	unsigned int i;
 
     for(i = 0; i < count; i++) {
-		
+
         unsigned cmd;
         cmd = table[i].cmd;
-	
+
         switch (cmd) {
-			
+
             case REGFLAG_DELAY :
                 MDELAY(table[i].count);
                 break;
-				
+
             case REGFLAG_END_OF_TABLE :
                 break;
-				
+
             default:
 				dsi_set_cmdq_V2(cmd, table[i].count, table[i].para_list, force_update);
 				UDELAY(10);
 				break;
        	}
     }
-	
+
 }
 
 
@@ -256,7 +256,7 @@ static void lcm_get_params(LCM_PARAMS *params)
 	params->dsi.data_format.padding     = LCM_DSI_PADDING_ON_LSB;
 	params->dsi.data_format.format      = LCM_DSI_FORMAT_RGB888;
 
-	// Video mode setting		
+	// Video mode setting
 	params->dsi.intermediat_buffer_num = 2;
 	params->dsi.packet_size=256;
 
@@ -267,7 +267,7 @@ static void lcm_get_params(LCM_PARAMS *params)
 	params->dsi.vertical_sync_active				= 4;
 	params->dsi.vertical_backporch					= 12;
 	params->dsi.vertical_frontporch					= 20;
-	params->dsi.vertical_active_line				= FRAME_HEIGHT; 
+	params->dsi.vertical_active_line				= FRAME_HEIGHT;
 
 	params->dsi.horizontal_sync_active				= 8;
 	params->dsi.horizontal_backporch				= 20;
@@ -277,7 +277,7 @@ static void lcm_get_params(LCM_PARAMS *params)
 	// Bit rate calculation
 	//params->dsi.pll_div1=30;		// fref=26MHz, fvco=fref*(div1+1)	(div1=0~63, fvco=500MHZ~1GHz)
 	//params->dsi.pll_div2=0;			// div2=0~15: fout=fvo/(2*div2)
-	
+
   	params->dsi.PLL_CLOCK = 150;//fps 60
 }
 
@@ -304,7 +304,7 @@ static void lcm_suspend(void)
 	}
 	else
 	{
-		
+
     	push_table(lcm_deep_sleep_mode_in_setting, sizeof(lcm_deep_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 		MDELAY(20);
 	}
@@ -340,7 +340,7 @@ static void lcm_update(unsigned int x, unsigned int y,
     unsigned int y0 = y;
     unsigned int x1 = x0 + width - 1;
     unsigned int y1 = y0 + height - 1;
-    
+
     unsigned char x0_MSB = ((x0>>8)&0xFF);
     unsigned char x0_LSB = (x0&0xFF);
     unsigned char x1_MSB = ((x1>>8)&0xFF);
@@ -349,9 +349,9 @@ static void lcm_update(unsigned int x, unsigned int y,
     unsigned char y0_LSB = (y0&0xFF);
     unsigned char y1_MSB = ((y1>>8)&0xFF);
     unsigned char y1_LSB = (y1&0xFF);
-    
+
     unsigned int data_array[16];
-    
+
 
     data_array[0]= 0x00053902;
     data_array[1]= (x1_MSB<<24)|(x0_LSB<<16)|(x0_MSB<<8)|0x2a;
@@ -362,7 +362,7 @@ static void lcm_update(unsigned int x, unsigned int y,
     data_array[1]= (y1_MSB<<24)|(y0_LSB<<16)|(y0_MSB<<8)|0x2b;
     data_array[2]= (y1_LSB);
     dsi_set_cmdq(data_array, 3, 1);
-    
+
     data_array[0]= 0x002c3909;
     dsi_set_cmdq(data_array, 1, 0);
 
@@ -375,10 +375,10 @@ static void lcm_setbacklight(void* handle,unsigned int level)
 	unsigned int mapped_level = 0;
 	printk("rm67160 lcm_setbacklight\n");
 	//for LGE backlight IC mapping table
-	if(level > 255) 
+	if(level > 255)
 			level = 255;
 
-	if(level >0) 
+	if(level >0)
 	{
 			mapped_level = default_level+(level)*(255-default_level)/(255);
 	}
@@ -409,7 +409,7 @@ static unsigned int lcm_getpwm(unsigned int divider)
 {
 	// ref freq = 15MHz, B0h setting 0x80, so 80.6% * freq is pwm_clk;
 	// pwm_clk / 255 / 2(lcm_setpwm() 6th params) = pwm_duration = 23706
-	unsigned int pwm_clk = 23706 / (1<<divider);	
+	unsigned int pwm_clk = 23706 / (1<<divider);
 	return pwm_clk;
 }
 
@@ -419,7 +419,7 @@ static unsigned int lcm_cmp_id(void)
 
 	unsigned int id1=0, id2 = 0;
 	unsigned char buffer[4];
-	unsigned int array[16];  
+	unsigned int array[16];
 
 	SET_RESET_PIN(1);
 	SET_RESET_PIN(0);
@@ -427,7 +427,7 @@ static unsigned int lcm_cmp_id(void)
 	SET_RESET_PIN(1);
 	MDELAY(50);
 	array[0]=0x00043902;
-	array[1]=0x010980ff; 
+	array[1]=0x010980ff;
 	array[2]=0x80001500;
 	array[3]=0x00033902;
 	array[4]=0x000980ff;
@@ -435,13 +435,13 @@ static unsigned int lcm_cmp_id(void)
 	MDELAY(10);
 	array[0] = 0x00043700;// set return byte number
 	dsi_set_cmdq(array, 1, 1);
-	
+
 	array[0] = 0x02001500;
 	dsi_set_cmdq(array, 1, 1);
-	
+
 	read_reg_V2(0xA1, &buffer, 4);
 
-	id1 = buffer[2]<<8 |buffer[3]; 
+	id1 = buffer[2]<<8 |buffer[3];
 	#ifdef BUILD_LK
 	LCM_PRINT("[rm67160_cmp_id] -- 0x%x , 0x%x \n",id1, id2);
 	#endif
@@ -455,7 +455,7 @@ static unsigned int lcm_cmp_id(void)
 
 
 
-LCM_DRIVER rm67160_400x400_dsi_cmd_oled_drv = 
+LCM_DRIVER rm67160_400x400_dsi_cmd_oled_drv =
 {
     .name			= "rm67160_400x400_dsi_cmd_oled",
 	.set_backlight_cmdq = lcm_setbacklight,
@@ -467,8 +467,5 @@ LCM_DRIVER rm67160_400x400_dsi_cmd_oled_drv =
 	.compare_id     = lcm_cmp_id,
 #if defined(LCM_DSI_CMD_MODE)
     .update         = lcm_update,
-#endif	
+#endif
 };
-
-
-
