@@ -159,7 +159,9 @@ static struct LCM_setting_table lcm_clk_sleep_mode_in_setting[] = {
 */
 
 static struct LCM_setting_table lcm_clk_sleep_mode_out_setting[] = {
-	{0xFE,1,{0x00}},
+	{0x13, 1, {0x00}},
+	{0x11, 1, {0x00}},
+	{REGFLAG_DELAY, 10, {}},
 	{0x38, 1, {0x00}},
 	{REGFLAG_DELAY, 10, {}},
 
@@ -167,7 +169,9 @@ static struct LCM_setting_table lcm_clk_sleep_mode_out_setting[] = {
 };
 
 static struct LCM_setting_table lcm_clk_sleep_mode_in_setting[] = {
-	//{0xFE,1,{0x00}},
+	{0x13, 1, {0x00}},
+	{0x11, 1, {0x00}},
+	{REGFLAG_DELAY, 10, {}},
 	{0x39, 1, {0x00}},
 	{REGFLAG_DELAY, 10, {}},
 
