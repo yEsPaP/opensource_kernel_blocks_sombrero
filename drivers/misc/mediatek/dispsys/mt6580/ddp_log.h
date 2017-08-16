@@ -8,22 +8,22 @@
 #define LOG_TAG
 #endif
 
-//#define DDP_DEBUG
+#define DDP_DEBUG
 
 #ifndef DDP_DEBUG
 
-#define DISP_LOG_D( fmt, args...)   
-#define DISP_LOG_I( fmt, args...)   
-#define DISP_LOG_W( fmt, args...) 
-#define DISP_LOG_E( fmt, args...)  
-#define DISP_LOG_V( fmt, args...) 
+#define DISP_LOG_D( fmt, args...)
+#define DISP_LOG_I( fmt, args...)
+#define DISP_LOG_W( fmt, args...)
+#define DISP_LOG_E( fmt, args...)
+#define DISP_LOG_V( fmt, args...)
 
-#define DDPIRQ(fmt, args...) 
-#define DDPDBG(fmt, args...)  
-#define DDPDEBUG_D(fmt, args...)  
-#define DDPMSG(fmt, args...) 
-#define DDPERR(fmt, args...) 
-#define DDPDUMP(fmt,...) 
+#define DDPIRQ(fmt, args...)
+#define DDPDBG(fmt, args...)
+#define DDPDEBUG_D(fmt, args...)
+#define DDPMSG(fmt, args...)
+#define DDPERR(fmt, args...)
+#define DDPDUMP(fmt,...)
 
 #else
 #define DISP_LOG_D( fmt, args...)   pr_debug("[DDP/"LOG_TAG"]"fmt, ##args)
@@ -35,7 +35,7 @@
 	do {                                       \
         if(ddp_debug_dbg_log_level()>=2)       \
 		    DISP_LOG_I(fmt,##args);            \
-	}while (0) 
+	}while (0)
 
 #define DDPIRQ(fmt, args...)                   \
 	do {                                       \
@@ -94,6 +94,6 @@
 	printk("[DDP Error]"string, ##args);  \
 }while(0)
 
-    
+
 
 #endif
