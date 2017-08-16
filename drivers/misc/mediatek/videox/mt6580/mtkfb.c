@@ -68,6 +68,8 @@ static u32 MTK_FB_PAGES = 0;
 static u32 fb_xres_update = 0;
 static u32 fb_yres_update = 0;
 
+#define LED_AMBIENT  17
+
 #define MTK_FB_XRESV (ALIGN_TO(MTK_FB_XRES, MTK_FB_ALIGNMENT))
 #define MTK_FB_YRESV (MTK_FB_YRES * MTK_FB_PAGES) /* For page flipping */
 #define MTK_FB_BYPP  ((MTK_FB_BPP + 7) >> 3)
@@ -2673,7 +2675,7 @@ static void mtkfb_early_suspend(struct early_suspend *h)
 		return;
 	
 	printk("[FB Driver] enter early_suspend\n");
-	mt65xx_leds_brightness_set(MT65XX_LED_TYPE_LCD, LED_OFF);
+	mt65xx_leds_brightness_set(MT65XX_LED_TYPE_LCD, LED_AMBIENT);
 	msleep(30);
 
 	ret = primary_display_suspend();
