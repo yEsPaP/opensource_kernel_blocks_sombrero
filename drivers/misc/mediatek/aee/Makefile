@@ -1,4 +1,4 @@
 obj-y	+= common/
 obj-$(CONFIG_MTK_AEE_FEATURE)	+= aed/
 obj-$(CONFIG_MTK_AEE_FEATURE)	+= ipanic/
-obj-y	+= mrdump/
+obj-$(CONFIG_MTK_AEE_MRDUMP)	+= mrdump/
