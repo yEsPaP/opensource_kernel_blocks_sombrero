@@ -886,6 +886,7 @@ static int tpd_i2c_probe(struct i2c_client *client, const struct i2c_device_id *
 
 	#ifdef DOUBLE_CLICK_WAKE
 	input_set_capability(tpd->dev, EV_KEY, KEY_POWER);
+	input_set_capability(tpd->dev, EV_KEY, KEY_SOFT_WAKE);
 	#endif
 
     tpd_load_status = 1;
@@ -985,9 +986,9 @@ static void check_gesture(int gesture_id)
 	switch(gesture_id)
 	{
 		case GESTURE_DOUBLECLICK:
-				input_report_key(tpd->dev, KEY_POWER, 1);
+				input_report_key(tpd->dev, KEY_SOFT_WAKE, 1);
 			    input_sync(tpd->dev);
-			     input_report_key(tpd->dev, KEY_POWER, 0);
+			     input_report_key(tpd->dev, KEY_SOFT_WAKE, 0);
 			    input_sync(tpd->dev);
 			break;
 #if 0
