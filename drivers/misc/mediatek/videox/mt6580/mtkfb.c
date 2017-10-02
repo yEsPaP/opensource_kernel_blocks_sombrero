@@ -2675,7 +2675,7 @@ static void mtkfb_early_suspend(struct early_suspend *h)
 		return;
 
 	printk("[FB Driver] enter early_suspend\n");
-	mt65xx_leds_brightness_set(MT65XX_LED_TYPE_LCD, LED_AMBIENT);
+	mt65xx_leds_brightness_set(MT65XX_LED_TYPE_LCD, LED_OFF);
 	msleep(30);
 
 	ret = primary_display_suspend();

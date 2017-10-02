@@ -322,7 +322,7 @@ static void lcm_suspend(void)
 	printk("RM67160 lcm_suspend,idle_clock_mode=%d\n",idle_clock_mode);
 	//if(idle_clock_mode == 1)
 	//{
-    	push_table(lcm_clk_sleep_mode_in_setting, sizeof(lcm_clk_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
+    	push_table(lcm_deep_sleep_mode_in_setting, sizeof(lcm_deep_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 	//}
 	//else
 	{
@@ -353,7 +353,7 @@ static void lcm_resume(void)
 		//lcm_init();
 	//}
 #endif
-	push_table(lcm_clk_sleep_mode_out_setting, sizeof(lcm_clk_sleep_mode_out_setting) / sizeof(struct LCM_setting_table), 1);
+	push_table(lcm_deep_sleep_mode_out_setting, sizeof(lcm_deep_sleep_mode_out_setting) / sizeof(struct LCM_setting_table), 1);
 
 	LCM_PRINT(" =========== %s, %d \n", "rm67160_400x400 lcm_resume", __LINE__);
 }
